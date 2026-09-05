@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "import",
+    "oxc",
+    "promise"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-debugger": "error",
+    "no-alert": "warn",
+    "no-eval": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-template": "warn",
+    "object-shorthand": "warn",
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "no-param-reassign": "warn",
+    "no-await-in-loop": "off",
+    "typescript/no-explicit-any": "warn",
+    "typescript/consistent-type-imports": "warn",
+    "typescript/no-non-null-assertion": "off",
+    "import/no-duplicates": "warn",
+    "import/no-unassigned-import": "off",
+    "import/no-named-as-default": "off",
+    "import/no-self-import": "error",
+    "unicorn/prefer-node-protocol": "warn",
+    "unicorn/no-array-for-each": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "promise/no-return-wrap": "warn"
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/dist_keycloak/**",
+    "**/node_modules/**",
+    "**/storybook-static/**",
+    "**/.turbo/**"
+  ]
+}

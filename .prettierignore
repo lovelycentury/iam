@@ -1,0 +1,11 @@
+node_modules
+dist
+dist_keycloak
+build
+coverage
+.turbo
+pnpm-lock.yaml
+*.min.js
+*.min.css
+**/keycloakify-dev-resources/**
+src/kc.gen.tsx

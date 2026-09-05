@@ -1,0 +1,14 @@
+# Single-package repo. pnpm still reads this for build-script allowlisting
+# and the release-age gate on the freshly published @okkly/* packages.
+allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": false
+  esbuild: true
+  sass-embedded: true
+
+minimumReleaseAgeExclude:
+  - "@okkly/design-system@0.1.0"
+  - "@okkly/helpers@0.1.0"
+  - "@okkly/icons@0.1.0"
+  - "@okkly/react-hooks@0.1.0"
+  - "@okkly/react@0.1.0"

@@ -1,0 +1,511 @@
+@use "@okkly/design-system/styles/breakpoints.scss" as bp;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html.iam-html,
+body.iam-body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: clip;
+  background: var(--okkly-bg-canvas);
+  color: var(--okkly-text-primary);
+  color-scheme: dark;
+  font-family: var(--okkly-font-family-sans);
+}
+
+html.iam-html[data-theme="light"] {
+  color-scheme: light;
+}
+
+.iam-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--okkly-bg-canvas);
+}
+
+.iam-brand {
+  position: relative;
+  overflow: clip;
+  min-height: 15.5rem;
+  background: linear-gradient(147.55deg, #0e4b3c 14.286%, #12131c 85.714%);
+}
+
+.iam-brand__glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(4.5rem);
+}
+
+.iam-brand__glow--a {
+  width: 22.5rem;
+  height: 22.5rem;
+  top: -2.5rem;
+  left: 15%;
+  background: color-mix(in srgb, var(--okkly-accent-primary) 42%, transparent);
+}
+
+.iam-brand__glow--b {
+  width: 17.5rem;
+  height: 17.5rem;
+  top: 2.5rem;
+  right: -8%;
+  background: color-mix(in srgb, var(--okkly-accent-secondary) 38%, transparent);
+}
+
+.iam-brand__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.iam-brand__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(
+    135deg,
+    var(--okkly-accent-primary) 14.286%,
+    var(--okkly-accent-secondary) 85.714%
+  );
+  color: var(--okkly-accent-contrast);
+  font-family: var(--okkly-font-family-sans);
+  font-size: 0.9375rem;
+  font-weight: var(--okkly-font-weight-medium);
+  line-height: 1.25rem;
+}
+
+.iam-brand__headline.okkly-typography {
+  --okkly-typography-font-size: 1.25rem;
+  --okkly-typography-line-height: 1.75rem;
+  --okkly-typography-letter-spacing: -0.002em;
+}
+
+.iam-brand__tagline.okkly-typography {
+  --okkly-typography-font-size: 0.875rem;
+  --okkly-typography-line-height: 1.375rem;
+}
+
+.iam-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 1.5rem 1.5rem 6.5rem;
+  background: var(--okkly-bg-canvas);
+  color: var(--okkly-text-primary);
+}
+
+.iam-panel {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.iam-panel__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.iam-alert {
+  width: 100%;
+  margin: 0;
+}
+
+.iam-form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 1rem;
+
+  .okkly-text-field,
+  .okkly-text-area,
+  .okkly-button {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+}
+
+.iam-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+
+  .okkly-checkbox__label {
+    font-size: 0.875rem;
+    line-height: 1.375rem;
+  }
+}
+
+.iam-form__actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.iam-submit {
+  filter: drop-shadow(
+    0 0 0.8125rem color-mix(in srgb, var(--okkly-accent-primary) 60%, transparent)
+  );
+}
+
+// .iam-password-toggle.okkly-icon-button {
+//   --okkly-icon-button-size: 1.75rem;
+//   --okkly-icon-button-icon-size: 1rem;
+//   --okkly-icon-button-border-radius: 0.875rem;
+//   --okkly-icon-button-text-color: var(--okkly-accent-primary);
+// }
+
+.iam-link {
+  color: var(--okkly-accent-primary);
+  font-family: var(--okkly-font-family-sans);
+  font-size: 0.8125rem;
+  font-weight: var(--okkly-font-weight-medium);
+  line-height: 1rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.iam-attempted-user {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.iam-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  color: var(--okkly-text-muted);
+  font-family: var(--okkly-font-family-sans);
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  text-align: center;
+
+  a {
+    color: var(--okkly-accent-primary);
+    font-size: 0.8125rem;
+    font-weight: var(--okkly-font-weight-medium);
+    line-height: 1rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.iam-social {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.iam-social__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.iam-otp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.iam-try-another-way {
+  margin-top: 0.25rem;
+}
+
+.iam-error {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.iam-fabs {
+  position: fixed;
+  right: max(1.75rem, env(safe-area-inset-right));
+  bottom: max(1.75rem, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.iam-locale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+
+  .okkly-fab__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.iam-locale__dial {
+  display: flex;
+  max-height: min(40vh, 20rem);
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  translate: 0 0.75rem;
+  transition:
+    opacity 180ms ease-out,
+    translate 180ms ease-out,
+    visibility 0s linear 180ms;
+
+  &[data-open] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    translate: 0 0;
+    transition:
+      opacity 180ms ease-out,
+      translate 180ms ease-out,
+      visibility 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    translate: 0;
+  }
+}
+
+.iam-locale__code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.iam-native-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4375rem;
+  min-width: 0;
+  width: 100%;
+
+  > label:not(.iam-native-fields__choice) {
+    color: var(--okkly-text-secondary);
+    font-size: 0.875rem;
+    font-weight: var(--okkly-font-weight-medium);
+    line-height: 1rem;
+  }
+
+  input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--okkly-border-default);
+    border-radius: 0.625rem;
+    background: var(--okkly-bg-surface);
+    color: var(--okkly-text-primary);
+    font: inherit;
+  }
+}
+
+.iam-native-fields__choice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--okkly-text-primary);
+  font-size: 0.875rem;
+}
+
+.iam-register-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+  width: 100%;
+
+  > [data-name] {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .okkly-text-field,
+  .okkly-text-area {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.iam-register-fields__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  grid-column: 1 / -1;
+}
+
+.iam-register-fields__add-remove {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@include bp.screen(min, md) {
+  .iam-shell {
+    flex-direction: row;
+  }
+
+  .iam-brand {
+    display: flex;
+    flex: 1 1 50%;
+    align-items: center;
+    min-height: 0;
+    background: linear-gradient(128.66deg, #0e4b3c 14.286%, #12131c 85.714%);
+  }
+
+  .iam-brand__glow--a {
+    width: 40rem;
+    height: 40rem;
+    top: 5rem;
+    left: 8%;
+  }
+
+  .iam-brand__glow--b {
+    width: 32.5rem;
+    height: 32.5rem;
+    top: auto;
+    right: -8%;
+    bottom: -12%;
+  }
+
+  .iam-brand__copy {
+    gap: 1.25rem;
+    max-width: 37rem;
+    padding: 4rem;
+  }
+
+  .iam-brand__headline.okkly-typography {
+    --okkly-typography-font-size: 2.75rem;
+    --okkly-typography-line-height: 3.125rem;
+    --okkly-typography-letter-spacing: -0.015em;
+  }
+
+  .iam-brand__tagline.okkly-typography {
+    --okkly-typography-font-size: 1rem;
+    --okkly-typography-line-height: 1.625rem;
+  }
+
+  .iam-main {
+    flex: 1 1 50%;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2.5rem 6.5rem;
+  }
+
+  .iam-panel {
+    max-width: 22.5rem;
+  }
+
+  .iam-panel:has(.iam-register-fields) {
+    max-width: 36rem;
+  }
+
+  .iam-register-fields {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "username email"
+      "firstName lastName"
+      "password confirm";
+
+    &:not(:has([data-name="username"])) {
+      grid-template-areas:
+        "email email"
+        "firstName lastName"
+        "password confirm";
+    }
+
+    > [data-name="username"] {
+      grid-area: username;
+    }
+
+    > [data-name="email"] {
+      grid-area: email;
+    }
+
+    > [data-name="firstName"] {
+      grid-area: firstName;
+    }
+
+    > [data-name="lastName"] {
+      grid-area: lastName;
+    }
+
+    > [data-name="password"] {
+      grid-area: password;
+    }
+
+    > [data-name="password-confirm"] {
+      grid-area: confirm;
+    }
+  }
+}
+
+html.iam-html[data-theme="light"] {
+  .iam-main,
+  .iam-panel,
+  .iam-fabs {
+    --okkly-bg-canvas: #f4f4f6;
+    --okkly-bg-surface: #ffffff;
+    --okkly-bg-surface-raised: #ececef;
+    --okkly-bg-inset: #e4e4e7;
+    --okkly-text-primary: #111113;
+    --okkly-text-secondary: #5c5c66;
+    --okkly-text-muted: #8a8a93;
+    --okkly-border-subtle: rgba(0, 0, 0, 0.08);
+    --okkly-border-default: rgba(0, 0, 0, 0.12);
+    --okkly-border-strong: rgba(0, 0, 0, 0.2);
+  }
+
+  .iam-main {
+    background: var(--okkly-bg-canvas);
+  }
+}

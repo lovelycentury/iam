@@ -1,0 +1,33 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap"
+  rel="stylesheet"
+/>
+<script>
+  (function () {
+    try {
+      var k = "okkly-iam-theme";
+      var s = localStorage.getItem(k);
+      document.documentElement.setAttribute(
+        "data-theme",
+        s === "light" || s === "dark" ? s : "dark",
+      );
+    } catch (e) {
+      try {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } catch (e2) {}
+    }
+  })();
+</script>
+<style>
+  html,
+  body,
+  #storybook-root,
+  #storybook-root > * {
+    margin: 0;
+    height: 100%;
+    min-height: 100%;
+    background: var(--okkly-bg-canvas, #0a0a0b);
+  }
+</style>

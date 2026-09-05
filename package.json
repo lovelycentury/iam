@@ -1,0 +1,45 @@
+{
+  "name": "@okkly/iam",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Keycloak login theme — Keycloakify + React + @okkly/react",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build-keycloak-theme": "pnpm run build && keycloakify build",
+    "start-keycloak": "keycloakify start-keycloak",
+    "storybook": "storybook dev -p 6007 --no-open",
+    "storybook:build": "storybook build",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@okkly/design-system": "^0.1.0",
+    "@okkly/icons": "^0.1.0",
+    "@okkly/react": "^0.1.0",
+    "keycloakify": "^11.15.13",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "oxlint": "1.77.0",
+    "prettier": "^3.4.2",
+    "sass-embedded": "^1.83.0",
+    "storybook": "^8.4.7",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000"
+}

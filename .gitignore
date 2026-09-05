@@ -1,0 +1,23 @@
+node_modules/
+dist/
+dist_keycloak/
+build/
+coverage/
+.turbo/
+storybook-static/
+# Mastra build output, local libSQL databases, and the vector index.
+.mastra/
+.next/
+out/
+*.tsbuildinfo
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+.remember
+lokki.zip
+.playwright-mcp
+.pnpm-store
+**/keycloakify-dev-resources/
+.keycloakify
