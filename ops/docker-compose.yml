@@ -32,8 +32,10 @@
 #   gunzip -c iam-YYYY-MM-DD.sql.gz \
 #     | docker compose exec -T postgres psql -U keycloak -d keycloak
 #
-# Secrets live in a `.env` next to this file, on the server only:
-#   IAM_DB_PASSWORD=...
+# Secrets come from a `.env` next to this file. The deploy workflow rewrites it
+# on every run from the repository secrets of the same names, so GitHub is the
+# source of truth; write it by hand only when bringing the stack up manually:
+#   IAM_DB_PASSWORD=...                  fixed at first boot, see the volume note
 #   KC_BOOTSTRAP_ADMIN_USERNAME=...      only used to create the first admin
 #   KC_BOOTSTRAP_ADMIN_PASSWORD=...      change it in the console afterwards
 #

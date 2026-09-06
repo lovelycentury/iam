@@ -7,10 +7,19 @@ permissions:
   contents: read
   packages: write
 
-# Repository secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY, DEPLOY_PATH.
+# Repository secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY, DEPLOY_PATH, plus
+# IAM_DB_PASSWORD and the KC_BOOTSTRAP_ADMIN_* pair, which the deploy job
+# writes into DEPLOY_PATH/.env on every run.
+#
 # The VPS must be logged in to ghcr.io (or the package made public) so that
-# `docker compose pull` can fetch the image, and DEPLOY_PATH must already hold
-# the `.env` with IAM_DB_PASSWORD and the KC_BOOTSTRAP_ADMIN_* pair.
+# `docker compose pull` can fetch the image.
+#
+# IAM_DB_PASSWORD is not rotatable from here: Postgres only reads
+# POSTGRES_PASSWORD when it initialises an empty `iam_db` volume, and stores
+# the password inside it from then on. Changing the secret afterwards only
+# changes what Keycloak sends, and it stops being able to connect. To rotate,
+# run ALTER ROLE keycloak PASSWORD '...' against the running database and
+# update the secret in the same breath.
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,11 +53,32 @@ jobs:
           target: ${{ secrets.DEPLOY_PATH }}
           strip_components: 1 # drop the ops/ prefix
       - uses: appleboy/ssh-action@v1.2.0
+        env:
+          IAM_DB_PASSWORD: ${{ secrets.IAM_DB_PASSWORD }}
+          KC_BOOTSTRAP_ADMIN_USERNAME: ${{ secrets.KC_BOOTSTRAP_ADMIN_USERNAME }}
+          KC_BOOTSTRAP_ADMIN_PASSWORD: ${{ secrets.KC_BOOTSTRAP_ADMIN_PASSWORD }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          # `envs` hands these to the remote shell as environment variables, so
+          # the values never appear in the script body itself.
+          envs: IAM_DB_PASSWORD,KC_BOOTSTRAP_ADMIN_USERNAME,KC_BOOTSTRAP_ADMIN_PASSWORD
           script: |
+            set -eu
             cd ${{ secrets.DEPLOY_PATH }}
+            : "${IAM_DB_PASSWORD:?missing repository secret}"
+            : "${KC_BOOTSTRAP_ADMIN_USERNAME:?missing repository secret}"
+            : "${KC_BOOTSTRAP_ADMIN_PASSWORD:?missing repository secret}"
+            # Rewritten every deploy, so the secrets are the single source of
+            # truth. Written 0600 via umask, and through a temp file so a failed
+            # run cannot leave a half-written .env behind.
+            umask 077
+            cat > .env.tmp <<EOF
+            IAM_DB_PASSWORD=${IAM_DB_PASSWORD}
+            KC_BOOTSTRAP_ADMIN_USERNAME=${KC_BOOTSTRAP_ADMIN_USERNAME}
+            KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD}
+            EOF
+            mv .env.tmp .env
             docker compose pull
             docker compose up -d --remove-orphans
