@@ -23,9 +23,11 @@ ENV PNPM_HOME="/pnpm" \
     PATH="/pnpm:$PATH" \
     CI="true" \
     SKIP_INSTALL_SIMPLE_GIT_HOOKS="1"
-# keycloakify shells out to `keytool` (a JRE) while packaging the provider JAR.
+# keycloakify shells out to two JVM tools while packaging the provider JAR:
+# `mvn` to build it and `keytool` to sign it. Debian calls the first package
+# `maven`, not `mvn` as keycloakify's own error message suggests.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends default-jre-headless \
+    && apt-get install -y --no-install-recommends default-jre-headless maven \
     && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 WORKDIR /repo
