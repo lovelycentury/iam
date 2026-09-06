@@ -1,0 +1,126 @@
+# VPS stack: Keycloak (with the Keycloakify theme baked in) + its Postgres.
+#
+# No ports are published. Caddy in ~/vps-infra owns 80/443, terminates TLS and
+# proxies over the shared network:
+#
+#   vps-infra/Caddyfile → iam.okryshto.dev → iam:8080
+#
+# Keycloak speaks plain HTTP here (KC_HTTP_ENABLED) and rebuilds every absolute
+# URL — redirect_uri, issuer, admin console assets — from KC_HOSTNAME and the
+# X-Forwarded-* headers Caddy sends. Get either wrong and it redirect-loops.
+#
+# Postgres is on a private network only; nothing but Keycloak can reach it.
+#
+# Persistence. Keycloak itself is stateless: every realm, user, client, role
+# and signing key is in Postgres, which is in the `iam_db` volume. A deploy
+# (`pull` + `up -d`) destroys and recreates both containers and the volume
+# survives untouched, so nothing is lost. What does lose it:
+#
+#   docker compose down -v        the -v is what removes volumes; plain
+#                                 `down` keeps them
+#   docker volume rm iam_db       the same thing, by hand
+#   bumping postgres to 18        a major upgrade cannot read a 17 data
+#                                 directory; dump first, then restore
+#
+# Back it up before touching any of those — and on a schedule:
+#
+#   docker compose exec -T postgres pg_dump -U keycloak keycloak \
+#     | gzip > iam-$(date +%F).sql.gz
+#
+# Restore into an empty database:
+#
+#   gunzip -c iam-YYYY-MM-DD.sql.gz \
+#     | docker compose exec -T postgres psql -U keycloak -d keycloak
+#
+# Secrets live in a `.env` next to this file, on the server only:
+#   IAM_DB_PASSWORD=...
+#   KC_BOOTSTRAP_ADMIN_USERNAME=...      only used to create the first admin
+#   KC_BOOTSTRAP_ADMIN_PASSWORD=...      change it in the console afterwards
+#
+#   docker compose up -d --pull always --remove-orphans
+#   docker compose logs -f
+
+name: iam
+
+networks:
+  vps-infra:
+    external: true
+    name: vps-infra_default
+  iam:
+
+volumes:
+  # The entire realm — users, clients, roles, signing keys — lives in here and
+  # nowhere else, so this volume IS the deployment's state. Deploys recreate
+  # the containers and leave it alone.
+  #
+  # The explicit `name` matters: without it Compose would call the volume
+  # `<project>_iam_db`, and renaming `name: iam` above would silently point
+  # Postgres at a fresh empty directory while the real data sat in an orphaned
+  # volume. Pinning the name decouples the data from the project name.
+  iam_db:
+    name: iam_db
+
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: iam-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${IAM_DB_PASSWORD:?set IAM_DB_PASSWORD in .env}
+    volumes:
+      - iam_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks: [iam]
+    <<: *logging
+
+  keycloak:
+    image: ghcr.io/lovelycentury/iam:latest
+    # The name ~/vps-infra/Caddyfile proxies to. Has to stay unique across
+    # every stack attached to vps-infra_default.
+    container_name: iam
+    restart: unless-stopped
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${IAM_DB_PASSWORD:?set IAM_DB_PASSWORD in .env}
+      # TLS ends at Caddy; Keycloak itself serves plain HTTP on 8080.
+      KC_HOSTNAME: https://iam.okryshto.dev
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
+      # Only used on the very first boot, to create the initial admin.
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME:?set it in .env}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD:?set it in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # Keycloak 25+ serves health on the management port 9000, enabled by the
+      # KC_HEALTH_ENABLED baked into the image. No wget/curl in the image, so
+      # bash /dev/tcp — same trick as resume's libsql, and it has to be spelled
+      # `bash -c` because CMD-SHELL runs sh, which has no /dev/tcp.
+      test:
+        [
+          "CMD-SHELL",
+          "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000; printf \"GET /health/ready HTTP/1.1\\r\\nHost: x\\r\\nConnection: close\\r\\n\\r\\n\" >&3; grep -q \"200 OK\" <&3'",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks: [vps-infra, iam]
+    <<: *logging
