@@ -1,0 +1,9 @@
+{
+  "autoAdd": false,
+  "emojiFormat": "code",
+  "scopePrompt": false,
+  "messagePrompt": true,
+  "capitalizeTitle": false,
+  "gitmojiForCommit": false,
+  "signedCommit": false
+}

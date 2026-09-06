@@ -5,6 +5,9 @@ allowBuilds:
   "@swc/core": false
   esbuild: true
   sass-embedded: true
+  # Its lifecycle script only re-registers the git hooks, which the root
+  # `prepare` script already does explicitly — no need to let it run on install.
+  simple-git-hooks: false
 
 minimumReleaseAgeExclude:
   - "@okkly/design-system@0.1.0"
