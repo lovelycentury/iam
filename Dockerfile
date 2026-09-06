@@ -16,9 +16,13 @@
 # vite.config.ts -> keycloakify({ startKeycloakOptions.dockerImage }).
 
 FROM node:22-slim AS build
+# .dockerignore drops .git, so the `prepare` script's simple-git-hooks would
+# find no repo to install into and log a misleading [ERROR] (it exits 0, so the
+# build survives either way). Nothing here commits, so skip it outright.
 ENV PNPM_HOME="/pnpm" \
     PATH="/pnpm:$PATH" \
-    CI="true"
+    CI="true" \
+    SKIP_INSTALL_SIMPLE_GIT_HOOKS="1"
 # keycloakify shells out to `keytool` (a JRE) while packaging the provider JAR.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends default-jre-headless \
